@@ -21,11 +21,13 @@ const Appbar = ({ title, href, backButton }: AppbarProps) => {
   return (
     <View style={styles.container}>
       {backButton && <TouchableOpacity style={styles.backButton} onPress={() => handleBackPress(href ?? undefined)}>
-        <Ionicons name="arrow-back" size={24} color="black" />
+        <Image
+          source={require('../assets/images/arrow-icon.png')}
+        />
       </TouchableOpacity>}
       {title && <Text style={styles.title}>{title}</Text>}
       <Image
-        source={require('../assets/images/Appbar-logo.png')}
+        source={require('../assets/images/haydos-logo-appbar.png')}
         style={styles.logo}
       />
     </View>
@@ -51,8 +53,8 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   logo: {
-    width: 30,
-    height: 30,
+    width: 103,
+    height: 103,
     resizeMode: 'contain',
   },
 });

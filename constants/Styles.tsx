@@ -13,10 +13,11 @@ export const colors = {
 
 export const buttonStyles = StyleSheet.create({
     buttonContainer: {
-      backgroundColor: 'white',
+      backgroundColor: '#4D9F56',
       borderRadius: 25, // Adjust this value to match the roundness of the button
       overflow: 'hidden',
-      width: '80%', // Adjust the width as needed
+      height: 32,
+      width: '40%', // Adjust the width as needed
       alignSelf: 'center',
       marginVertical: 10,
       shadowColor: '#000',
@@ -26,14 +27,14 @@ export const buttonStyles = StyleSheet.create({
       elevation: 3, // for Android shadow
     },
     button: {
-      backgroundColor: 'white',
-      paddingVertical: 12,
+      //backgroundColor: '#4D9F56',
+      paddingVertical: 4,
       paddingHorizontal: 20,
       alignItems: 'center',
       justifyContent: 'center',
     },
     buttonText: {
-      color: '#755fab', // Dark purple color for text
+      color: 'white', // Dark purple color for text
       fontSize: 16,
       fontWeight: 'bold',
       textTransform: 'uppercase',
@@ -46,48 +47,57 @@ export const buttonStyles = StyleSheet.create({
   });
 export const inputStyles = StyleSheet.create({
     inputContainer: {
-      backgroundColor: 'white',
-      borderRadius: 10,
+      backgroundColor: '#404040',
+      borderRadius: 25,
       borderWidth: 1,
-      borderColor: '#888',
-      paddingHorizontal: 15,
-      paddingVertical: 10,
-      height: 60,
-      marginVertical: 10,
+      borderColor: '#404040',
+      height: 50,
+      width: '80%',
       flexDirection: 'row',
+      alignSelf: 'center',
       alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.5,
-      shadowRadius: 1.5,
-      elevation: 3,
+      paddingHorizontal: 15,
+      marginBottom: 5,
     },
     input: {
       flex: 1,
       fontSize: 16,
-      color: '#333',
-      marginLeft: 10,
+      color: 'white',
+      height: '100%',
+      paddingVertical: 0,
+    },
+    iconContainer: {
+      width: 24,
+      height: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 10,
     },
     icon: {
+      fontSize: 16,
       width: 20,
       height: 20,
-      tintColor: '#888',
+      color: 'white',
     },
-    passwordToggle: {
-      padding: 10,
-    },
-    formContainer: {
-      backgroundColor: '#e9ffce', // Light green background
-      padding: 20,
-      borderRadius: 30,
+    pretext: {
+      color: colors.text,
+      fontSize: 14,
+      alignSelf: 'center',
     },
   });
 export const formBodyStyles = StyleSheet.create({
-    formBody: {
-      padding: 20,
-      flex: 1,
-      justifyContent: 'center',
-    },
+  
+  formBody: {
+    paddingTop: 20,
+    paddingBottom: 30,
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+  },
+  errorLabel: {
+    color: colors.error,
+    fontSize: 14,
+    alignSelf: 'center',
+  }
 });
 
 
