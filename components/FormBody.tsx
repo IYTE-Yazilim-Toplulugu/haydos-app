@@ -16,9 +16,8 @@ export interface ButtonProps {
 
 export const FormBody = (formBodyProps: FormBodyProps) => {
   return (
-    <ScrollView 
-        contentContainerStyle={formBodyStyles.formBody}
-        keyboardShouldPersistTaps="handled"
+    <View
+        style={formBodyStyles.formBody}
     >
       {formBodyProps.inputs.map((input, index) => (
         <FormInput key={index} 
@@ -40,6 +39,6 @@ export const FormBody = (formBodyProps: FormBodyProps) => {
         </TouchableOpacity>
       ))}
       {formBodyProps.errorLabel && <Text style={formBodyStyles.errorLabel}>{formBodyProps.errorLabel}</Text>}
-    </ScrollView>
+    </View>
   )
 }

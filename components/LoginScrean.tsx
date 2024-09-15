@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { router } from 'expo-router'
 import Appbar from '@/components/Appbar'
 import { FormBody, FormBodyProps } from '@/components/FormBody'
@@ -84,10 +84,13 @@ const login = () => {
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
 			style={{ flex: 1 }}
 		>
-			<View style={{ flex: 1, backgroundColor: '#EAECE2' }}>
-				<FormBody {...formBodyProps}/>
-				<Appbar backButton={true}/>
-			</View>
+      	  <ScrollView 
+      	    contentContainerStyle={{ flexGrow: 1 }}
+      	    style={{ flex: 1, backgroundColor: '#EAECE2' }}
+      	  >
+      	    <FormBody {...formBodyProps}/>
+      	    <Appbar backButton={true}/>
+      	  </ScrollView>
 		</KeyboardAvoidingView>
 	)
 }

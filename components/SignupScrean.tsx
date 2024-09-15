@@ -114,10 +114,13 @@ const SignupScrean = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <View style={{ flex: 1, backgroundColor: '#EAECE2' }}>
-          <FormBody {...formBodyProps}/>
-          <Appbar backButton={true}/>
-      </View>
+      <ScrollView 
+        contentContainerStyle={{ flexGrow: 1 }}
+        style={{ flex: 1, backgroundColor: '#EAECE2' }}
+      >
+        <FormBody {...formBodyProps}/>
+        <Appbar backButton={true}/>
+      </ScrollView>
     </KeyboardAvoidingView>
   )
 }
