@@ -80,18 +80,14 @@ const login = () => {
 	};
 
 	return (
-		<KeyboardAvoidingView 
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			style={{ flex: 1 }}
-		>
-      	  <ScrollView 
-      	    contentContainerStyle={{ flexGrow: 1 }}
-      	    style={{ flex: 1, backgroundColor: '#EAECE2' }}
-      	  >
-      	    <FormBody {...formBodyProps}/>
-      	    <Appbar backButton={true}/>
-      	  </ScrollView>
-		</KeyboardAvoidingView>
+      	<ScrollView 
+      	  contentContainerStyle={{ flexGrow: 1 }}
+      	  style={{ flex: 1, backgroundColor: '#EAECE2' }}
+		  keyboardShouldPersistTaps="handled"
+      	>
+      	  <FormBody {...formBodyProps}/>
+      	  <Appbar backButton={true}/>
+      	</ScrollView>
 	)
 }
 
