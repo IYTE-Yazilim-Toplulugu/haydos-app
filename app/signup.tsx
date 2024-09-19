@@ -58,6 +58,7 @@ const SignupScrean = () => {
         router.push('./login');
       } else {
         console.log('SignupUser: Form is not valid');
+        //once the services are ready, change the error label to the actual error message
         setErrorlabel("signup failed")
       }
 		} else {

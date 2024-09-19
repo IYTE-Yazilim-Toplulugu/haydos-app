@@ -7,7 +7,7 @@ import { validateForm, required, isEmail } from '@/utils/formvalidation'
 import { loginRequest } from '@/service/userServices'
 
 const login = () => {
-	const [formData, setFormData] = useState({
+	const [loginData, setloginData] = useState({
 		email: '',
 		password: '',
 	});
@@ -25,15 +25,15 @@ const login = () => {
 	};
 
 	const handleLogin = () => {
-		const newErrors = validateForm(formData, validationRules);
+		const newErrors = validateForm(loginData, validationRules);
 		setErrors(newErrors as { email: string; password: string; });
 
 		if (Object.keys(newErrors).length === 0) {
 			// Form is valid, proceed with login
-			const response = loginRequest(formData);
+			const response = loginRequest(loginData);
 			console.log('Login button pressed');
-			console.log('Email:', formData.email);
-			console.log('Password:', formData.password);
+			console.log('Email:', loginData.email);
+			console.log('Password:', loginData.password);
 			if(response.status === 200){
 				console.log('Login successful');
 				router.push('./home');
@@ -42,14 +42,14 @@ const login = () => {
 			}
 		} else {
 			console.log('loginUser: Form is not valid');
-			if(Object.values(formData).some(value => value.trim() !== '')){
+			if(Object.values(loginData).some(value => value.trim() !== '')){
 				setErrorlabel(Object.values(newErrors)[0] || '');
 			}
 		}
     };
 
-	const handleInputChange = (field: keyof typeof formData) => (value: string) => {
-		setFormData(prev => ({ ...prev, [field]: value }));
+	const handleInputChange = (field: keyof typeof loginData) => (value: string) => {
+		setloginData(prev => ({ ...prev, [field]: value }));
 		// Clear error when user starts typing
 		if (errors[field]) {
 			setErrors(prev => ({ ...prev, [field]: '' }));
@@ -63,7 +63,7 @@ const login = () => {
 				placeholder: '@std.iyte.edu.tr',
 				pretext: 'Your Mail',
 				secureTextEntry: false,
-				value: formData.email,
+				value: loginData.email,
 				onChangeText: handleInputChange('email'),
 				error: errors.email,
 			},
@@ -72,7 +72,7 @@ const login = () => {
 				placeholder: '********',
 				pretext: 'Password',
 				secureTextEntry: true,
-				value: formData.password,
+				value: loginData.password,
 				onChangeText: handleInputChange('password'),
 				error: errors.password,
 			},
