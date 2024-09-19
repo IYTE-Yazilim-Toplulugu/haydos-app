@@ -1,6 +1,6 @@
-//TODO: implement feeding location services and API coonnection later.
+//TODO: implement feeding location services and API connection later.
 
-export const listFeedingLocations = () => {
+export const listFeedingLocations = async () => {
     return {
         data: [
         {

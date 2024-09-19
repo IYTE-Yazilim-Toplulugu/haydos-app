@@ -1,5 +1,5 @@
 
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity} from 'react-native'
 import MapView, { Marker } from 'react-native-maps';
 import React, { useEffect, useState } from 'react'
 import {mapstyles } from '@/constants/Styles'
@@ -50,10 +50,6 @@ const FeedingScreen = () => {
   }
 
   const [markersList, setMarkers] = useState<Marker[]>([]);
-
-  useEffect(() => {
-    getFeedingLocations();
-  }, []);
 
   //TODO: implement feeding location services and API coonnection later.
   async function getFeedingLocations() {
