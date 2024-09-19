@@ -1,26 +1,53 @@
-import { Text, View } from "react-native";
-import { Link } from 'expo-router';
+import { View, Text } from 'react-native'
+import { StyleSheet } from 'react-native';
+import React from 'react'
+import { Link } from 'expo-router'
+import { ThemedText } from '@/components/ThemedText'
 
-export default function Index() {
+const Index = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#EAECE2',
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Link href= "./login">
-        <Text>Login</Text>
-      </Link>
-      <Link href= "./signup">
-        <Text>Signup</Text>
-      </Link>
-      <Link href= "./feeding">
-        <Text>Maps</Text>
-      </Link>
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+    <View>
+      <Text>index</Text>
+      <Link href="/login" style={styles.link}>
+        <ThemedText type="link">Login Page</ThemedText>
+       </Link>
+       <Link href="/signup" style={styles.link}>
+        <ThemedText type="link">Sign Up Page</ThemedText>
+       </Link>
+       <Link href="/feeding" style={styles.link}>
+        <ThemedText type="link">Feeding Page</ThemedText>
+       </Link>
+       <Link href="./adoption" style={styles.link}>
+        <ThemedText type="link">Adoption Page</ThemedText>
+       </Link>
+       <Link href="/home" style={styles.link}>
+        <ThemedText type="link">Home Page</ThemedText>
+       </Link>
+       <Link href="./missings" style={styles.link}>
+        <ThemedText type="link">Missings Page</ThemedText>
+       </Link>
+       <Link href="./pawDetailed" style={styles.link}>
+        <ThemedText type="link">Detailed Paw Page</ThemedText>
+       </Link>
+       <Link href="./paws" style={styles.link}>
+        <ThemedText type="link">Paws Page</ThemedText>
+       </Link>
+       <Link href="./profile" style={styles.link}>
+        <ThemedText type="link">Profile Page</ThemedText>
+       </Link>
+       <Link href="./vets" style={styles.link}>
+        <ThemedText type="link">Vets Page</ThemedText>
+       </Link>
     </View>
-  );
+  )
 }
+
+const styles = StyleSheet.create({
+    link: {
+      marginTop: 15,
+      paddingVertical: 15,
+    },
+  });
+
+
+export default Index
