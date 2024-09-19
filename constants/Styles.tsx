@@ -52,7 +52,7 @@ export const inputStyles = StyleSheet.create({
       borderWidth: 1,
       borderColor: '#404040',
       height: 50,
-      width: '80%',
+      width: '70%',
       flexDirection: 'row',
       alignSelf: 'center',
       alignItems: 'center',
@@ -91,13 +91,82 @@ export const formBodyStyles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 30,
     flexGrow: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
   },
   errorLabel: {
     color: colors.error,
     fontSize: 14,
     alignSelf: 'center',
   }
+});
+export const mapstyles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: '#EAECE2',
+  },
+  contentContainer: {
+    flex: 1, // This will make it take up all available space
+  },
+  blackContainer: {
+    flex: 1, // This will make it expand to fill the contentContainer
+    backgroundColor: '#404040',
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    overflow: 'hidden',
+    paddingBottom: 5,
+  },
+  mapContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
+    overflow: 'hidden',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  volunteerButtonsContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 5,
+  },
+  volunteerButtonContainer: {
+    borderRadius: 25,
+    overflow: 'hidden',
+    height: 34,
+    width: 179,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  locationButtonsContainer: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  locationButtonContainer: {
+    borderRadius: 20,
+    width: '45%', // Adjust as needed
+    height: 30,
+    backgroundColor: "#404040",
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  feedingDoneButton: {
+    borderRadius: 25,
+    width: '80%',
+    height: 45,
+    backgroundColor: "#4D9F56",
+    alignSelf: 'center',
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 
