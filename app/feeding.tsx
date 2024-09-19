@@ -124,7 +124,9 @@ const FeedingScreen = () => {
           </View>
         </View>
         <View style={mapstyles.locationButtonsContainer}>
-            {markersList.map((marker, index) => (
+            {markersList
+              .filter(marker => !marker.isUser)
+              .map((marker, index) => (
               <TouchableOpacity 
               key={index} 
               style={[
