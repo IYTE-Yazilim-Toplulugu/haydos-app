@@ -7,7 +7,7 @@ const InfoCard = () => {
       <View style={styles.infoCard}>
         <View style={styles.infoColumn}>
           <Text style={styles.infoLabel}>Name Surname</Text>
-          <Text style={styles.infoValue}>Göktug ERÇEK</Text>
+          <Text style={styles.infoValue}>Mete ERÇEK</Text>
         </View>
         <View style={styles.infoColumn}>
           <Text style={styles.infoLabel}>PHONE NUMBER</Text>
