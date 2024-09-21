@@ -1,12 +1,39 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import Header from '../components/Header';
+import InfoCard from '../components/InfoCard';
+import ActivityFeed from '../components/ActiviyData';
+import SearchBar from '../components/SearchBar';
 
 const Profile = () => {
   return (
-    <View>
-      <Text>Profile</Text>
-    </View>
-  )
-}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <InfoCard />
+        <View style={styles.whiteArea}>
+          <ActivityFeed />
+          <SearchBar />
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+};
 
-export default Profile
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#4D9F56',
+  },
+  whiteArea: {
+    flex: 1,
+    backgroundColor: '#ECEEE5',
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    marginTop: -20, // Üstteki alanla örtüşmesini sağlar
+    paddingTop: 20, // İçeriği yukarı kaydırır
+  },
+});
+
+export default Profile;
