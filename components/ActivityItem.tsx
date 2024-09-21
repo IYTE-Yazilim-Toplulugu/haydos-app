@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { useFonts } from 'expo-font';
 
 interface ActivityItemProps {
   name: string;
@@ -11,9 +12,19 @@ interface ActivityItemProps {
 const ActivityItem: React.FC<ActivityItemProps> = ({ name, action, showAddButton }) => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
 
+  const [fontsLoaded] = useFonts({
+    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
+    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+  });
+
   const handleAddUser = () => {
     setIsAddModalVisible(true);
   };
+
+  if (!fontsLoaded) {
+    return null; // Fontlar yüklenene kadar bir şey gösterme
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -68,13 +79,12 @@ const styles = StyleSheet.create({
     
   },
   name: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Bold',
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#333',
   },
   action: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Regular',
     fontSize: 14,
     color: '#666',
     marginTop: 2,

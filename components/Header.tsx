@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, Alert, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
+import { useFonts } from 'expo-font';
 
 const MAX_MOOD_DESCRIPTION_LENGTH = 50;
 
 const Header = () => {
+  const [fontsLoaded] = useFonts({
+    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
+    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+    'Inter-Thin': require('../assets/fonts/Inter-Thin.ttf'),
+  });
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(require('../assets/picture.png'));
   const [moodDescription, setMoodDescription] = useState('Describe your mood to share with friends.');
@@ -46,6 +53,10 @@ const Header = () => {
   const toggleEditing = () => {
     setIsEditing(!isEditing);
   };
+
+  if (!fontsLoaded) {
+    return null; // Fontlar yüklenene kadar bir şey gösterme
+  }
 
   return (
     <View style={styles.header}>
@@ -151,13 +162,12 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   headerTitle: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Regular',
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold',
   },
   headerSubtitle: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Regular',
     color: '#fff',
     fontSize: 12,
   },
@@ -174,12 +184,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statLabel: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Regular',
     color: '#fff',
     fontSize: 14,
   },
   statValue: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Thin',
     color: '#fff',
     fontSize: 50,
     fontWeight:"thin",
@@ -219,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
   },
   menuItemText: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Regular',
   },
   modalOverlay: {
     flex: 1,
@@ -236,7 +246,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   moodDescriptionInput: {
-    fontFamily: 'InterRegular',
+    fontFamily: 'Inter-Regular',
     color: '#fff',
     fontSize: 12,
     flex: 1,
