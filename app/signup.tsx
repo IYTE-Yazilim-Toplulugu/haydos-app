@@ -1,25 +1,46 @@
-import { View, Text } from 'react-native';
-import { StyleSheet } from 'react-native';
-import React from 'react'
-import { Link } from 'expo-router';
-import { ThemedText } from '@/components/ThemedText';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 const Signup = () => {
+  const router = useRouter();
+
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
-    <View>
-      <Text>Signup</Text>
-      <Link href="/" style={styles.link}>
-        <ThemedText type="link">Go Back</ThemedText>
-      </Link>
+    <View style={styles.container}>
+      <Text style={styles.title}>Sign Up Screen</Text>
+      <TouchableOpacity onPress={handleGoBack} style={styles.button}>
+        <Text style={styles.buttonText}>Go Back</Text>
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#4D9F56',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
-export default Signup
+export default Signup;

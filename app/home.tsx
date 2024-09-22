@@ -1,27 +1,25 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
 const Home = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const handleLogin = () => {
     console.log('Login butonuna basıldı');
-    navigation.navigate('Login' as never);
+    router.push('/login');
   };
 
   const handleSignIn = () => {
     console.log('Sign In butonuna basıldı');
-    // Burada Sign In ekranına yönlendirme yapabilirsiniz
-    // navigation.navigate('SignIn' as never);
+    router.push('/signup');
   };
 
   const handleCallVets = () => {
     console.log('Call Vets butonuna basıldı');
-    // Burada Call Vets ekranına yönlendirme yapabilirsiniz
-    // navigation.navigate('CallVets' as never);
+    router.push('/vets');
   };
 
   return (

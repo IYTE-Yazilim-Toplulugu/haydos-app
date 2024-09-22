@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 
@@ -12,8 +12,11 @@ const SearchBar = () => {
 
   return (
     <View style={styles.searchWrapper}>
-      <TouchableOpacity onPress={handleBackPress}>
-        <Icon name="arrow-left" size={24} color="#4D9F56" style={styles.backIcon} />
+      <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+        <Image 
+          source={require('../assets/BackButton.png')} 
+          style={styles.backIcon} 
+        />
       </TouchableOpacity>
       <View style={styles.searchContainer}>
         <Icon name="search" size={20} color="#888" style={styles.searchIcon} />
@@ -33,10 +36,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 10,
+  },
+  backButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 40,
+    height: 40,
+    marginRight: 10,
     marginTop: 10,
   },
   backIcon: {
-    marginRight: 10,
+    width: 32,
+    height: 32,
   },
   searchContainer: {
     flex: 1,
@@ -52,6 +63,8 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
+    height: 40,
+    padding: 0,
   },
 });
 
