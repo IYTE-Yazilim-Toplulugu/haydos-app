@@ -30,11 +30,11 @@ interface MarkerInfo {
 
 const FeedingScreen = () => {
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
-  const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
+  const watchPositionSubscription = useRef<Location.LocationSubscription | null>(null);
   const [markersList, setMarkers] = useState<MarkerInfo[]>([]);
   const [userMarker, setUserMarker] = useState<MarkerInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [tracksViewChanges, setTracksViewChanges] = useState<boolean>(false);
+  const [tracksViewChanges, setTracksViewChanges] = useState<boolean>(true);
   const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
@@ -47,6 +47,19 @@ const FeedingScreen = () => {
       } finally {
         setIsLoading(false);
       }
+      watchPositionSubscription.current = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 10000,
+          distanceInterval: 2,
+        },
+        (newLocation) => {
+          updateUserLocation(newLocation);
+        }
+      );
+      return () => {
+        watchPositionSubscription.current?.remove();
+    };
     };
 
     initializeScreen();
@@ -71,16 +84,18 @@ const FeedingScreen = () => {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    setUserLocation(location);
-    setUserMarker(
-      {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        title: "Your Location",
-        description: "This is where you are",
-        isUser: true
-      }
-    );
+    updateUserLocation(location);
+  };
+
+  const updateUserLocation = (location: Location.LocationObject) => {
+    console.log("updated location", location)
+    setUserMarker({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      title: "Your Location",
+      description: "This is where you are",
+      isUser: true,
+    });
   };
 
   const handleMarkerPress = useCallback((marker: MarkerInfo) => {
@@ -99,7 +114,7 @@ const FeedingScreen = () => {
 }, [selectedMarker]);
 
 
-  const renderMarker = (marker: MarkerInfo) => {
+  const renderMarker = useCallback((marker: MarkerInfo) => {
     const isSelected = marker.title === selectedMarker;
 
     return (
@@ -112,7 +127,7 @@ const FeedingScreen = () => {
           longitude: marker.longitude,
         }}
         onPress={() => {handleMarkerPress(marker)}}
-        tracksViewChanges={tracksViewChanges || isSelected || marker.isUser  }
+        tracksViewChanges={isSelected || tracksViewChanges || marker.isUser}
       >
         {marker.isUser ? (
           <MaterialCommunityIcons 
@@ -135,14 +150,14 @@ const FeedingScreen = () => {
           />
         )}
       </Marker>
-    );
-  };
+      )
+    },[selectedMarker, tracksViewChanges]);
 
   useEffect(() => {
     if (markersList.length > 0) {
       const timer = setTimeout(() => {
         setTracksViewChanges(false);
-      }, 1000); 
+      }, 3000); 
 
       return () => clearTimeout(timer);
     }
