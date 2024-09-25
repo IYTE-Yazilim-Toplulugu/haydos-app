@@ -1,7 +1,6 @@
 import { View, Text,StyleSheet, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
-import { Ionicons } from '@expo/vector-icons';
-import { Link, router, Href } from 'expo-router';
+import { router, Href } from 'expo-router';
 
 interface AppbarProps {
   title?: string;
@@ -33,7 +32,6 @@ const Appbar = ({ title, href, backButton }: AppbarProps) => {
     </View>
   )
 }
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',

@@ -1,88 +1,161 @@
-
-import { View, Text, TouchableOpacity} from 'react-native'
-import MapView, { Marker } from 'react-native-maps';
-import React, { useEffect, useState } from 'react'
-import {mapstyles } from '@/constants/Styles'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import MapView, { Callout, Marker } from 'react-native-maps';
+import { mapstyles } from '@/constants/Styles'
 import Appbar from '@/components/Appbar';
 import { listFeedingLocations } from '@/service/feedingLocationServices';
 import * as Location from 'expo-location';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+interface MapProps {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+};
+const mapProps: MapProps = {
+  latitude: 38.318144870016255,
+  longitude: 26.639504592535328,
+  latitudeDelta: 0.0922,
+  longitudeDelta: 0.0421,
+};
+
+interface MarkerInfo {
+  latitude: number;
+  longitude: number;
+  title: string;
+  description: string;
+  isUser: boolean;
+}
 
 const FeedingScreen = () => {
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
-
   const [userLocation, setUserLocation] = useState<Location.LocationObject | null>(null);
+  const [markersList, setMarkers] = useState<MarkerInfo[]>([]);
+  const [userMarker, setUserMarker] = useState<MarkerInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [tracksViewChanges, setTracksViewChanges] = useState<boolean>(false);
+  const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Permission to access location was denied');
-        return;
+    const initializeScreen = async () => {
+      try {
+        await getFeedingLocations();
+        await getUserLocation();
+      } catch (error) {
+        console.error("Error initializing screen:", error);
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      let location = await Location.getCurrentPositionAsync({});
-      setUserLocation(location);
-
-      // Add user location to markersList
-      setMarkers(prevMarkers => [
-        ...prevMarkers,
-        {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          title: "Your Location",
-          description: "This is where you are",
-          isUser: true
-        }
-      ]);
-
-      console.log(location);
-    })();
-
-    getFeedingLocations();
+    initializeScreen();
   }, []);
 
-  interface Marker {
-    latitude: number;
-    longitude: number;
-    title: string;
-    description: string;
-    isUser: boolean;
-  }
-
-  const [markersList, setMarkers] = useState<Marker[]>([]);
-
-  //TODO: implement feeding location services and API coonnection later.
-  async function getFeedingLocations() {
+  const getFeedingLocations = async () => {
     try {
       const response = await listFeedingLocations();
       setMarkers(response.data);
+      setTracksViewChanges(true); // Initialize to true
+      console.log("Feeding locations fetched:", response.data);
     } catch (error) {
       console.error("Error fetching feeding locations:", error);
-      // Handle the error appropriately (e.g., show an error message to the user)
     }
   };
 
-  //TODO: implement marker button press.
-  const handleMarkerPress = (marker: Marker) => {
-    if(selectedMarker === marker.title){
-      setSelectedMarker(null);
-    }else{
-      setSelectedMarker(marker.title);
+  const getUserLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.log('Permission to access location was denied');
+      return;
     }
+
+    let location = await Location.getCurrentPositionAsync({});
+    setUserLocation(location);
+    setUserMarker(
+      {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        title: "Your Location",
+        description: "This is where you are",
+        isUser: true
+      }
+    );
   };
 
-  interface MapProps {
-    latitude: number;
-    longitude: number;
-    latitudeDelta: number;
-    longitudeDelta: number;
+  const handleMarkerPress = useCallback((marker: MarkerInfo) => {
+    if (selectedMarker === marker.title) {
+        setSelectedMarker(null);
+    } else {
+        setSelectedMarker(marker.title);
+        mapRef.current?.animateToRegion({
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+        }, 1000);
+
+    }
+}, [selectedMarker]);
+
+
+  const renderMarker = (marker: MarkerInfo) => {
+    const isSelected = marker.title === selectedMarker;
+
+    return (
+      <Marker
+        key={`${marker.latitude}-${marker.longitude}`}
+        title= {marker.title}
+        description={marker.description}        
+        coordinate={{ 
+          latitude: marker.latitude,
+          longitude: marker.longitude,
+        }}
+        onPress={() => {handleMarkerPress(marker)}}
+        tracksViewChanges={tracksViewChanges || isSelected || marker.isUser  }
+      >
+        {marker.isUser ? (
+          <MaterialCommunityIcons 
+            name="map-marker-account" 
+            size={32} 
+            color="#4e8a54" 
+          />
+        ) : (
+          <Image
+            source={
+              isSelected
+                ? require("../assets/images/GreenFeedingMarker.png")
+                : require("../assets/images/RedFeedingMarker.png")
+            }
+            style={{
+              width: 40,
+              height: 40,
+              resizeMode: 'contain'
+            }}
+          />
+        )}
+      </Marker>
+    );
   };
-  const mapProps: MapProps = {
-    latitude: 38.318144870016255,
-    longitude: 26.639504592535328,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  };
+
+  useEffect(() => {
+    if (markersList.length > 0) {
+      const timer = setTimeout(() => {
+        setTracksViewChanges(false);
+      }, 1000); 
+
+      return () => clearTimeout(timer);
+    }
+  }, [markersList]);
+
+  if (isLoading) {
+    return (
+      <View style={[mapstyles.mainContainer, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading map and locations...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={mapstyles.mainContainer}>
@@ -90,24 +163,14 @@ const FeedingScreen = () => {
         <View style={mapstyles.blackContainer}>
           <View style={mapstyles.mapContainer}>
             <MapView 
+              ref={mapRef}
               style={mapstyles.map}
               initialRegion={mapProps}
               zoomEnabled={true}
               zoomControlEnabled={true}
             >
-              {
-                markersList.map((marker, index) => (
-                  <Marker
-                  key={index}
-                  coordinate={{ 
-                    latitude: marker.latitude,
-                    longitude: marker.longitude,
-                  }}
-                  title={marker.title}
-                  description={marker.description}
-                />
-              ))
-              }
+              {markersList.map(renderMarker)}
+              {userMarker && renderMarker(userMarker)}
             </MapView>
           </View>
           <View style={mapstyles.volunteerButtonsContainer}>

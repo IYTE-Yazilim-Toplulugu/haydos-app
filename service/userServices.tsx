@@ -18,8 +18,9 @@ const tempusers: User[] = [
   }
 ]
 
+//TODO: when the service part finished is the backend for this rewrite here...
 export const loginRequest = (userCredentials: LoginCredentials) => {
-    const foundUser = tempusers.find(user => user.email === userCredentials.email)
+    const foundUser = tempusers.find(user => user.email === userCredentials.email && user.password === userCredentials.password)
     if (foundUser) {
         return { status: 200, message: "Login successful" }
     } else {
@@ -27,6 +28,7 @@ export const loginRequest = (userCredentials: LoginCredentials) => {
     }
 }
 
+//TODO: when the service part finished is the backend for this rewrite here...
 export const signupRequest = (userCredentials: User) => {
   const foundUser = tempusers.find(user => user.email === userCredentials.email)
   if(foundUser){
