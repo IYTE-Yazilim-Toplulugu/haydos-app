@@ -34,7 +34,7 @@ const FeedingScreen = () => {
   const [markersList, setMarkers] = useState<MarkerInfo[]>([]);
   const [userMarker, setUserMarker] = useState<MarkerInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [tracksViewChanges, setTracksViewChanges] = useState<boolean>(true);
+  const [tracksViewChangesValue, setTracksViewChanges] = useState<boolean>(true);
   const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
@@ -47,29 +47,26 @@ const FeedingScreen = () => {
       } finally {
         setIsLoading(false);
       }
-      watchPositionSubscription.current = await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 10000,
-          distanceInterval: 2,
-        },
-        (newLocation) => {
-          updateUserLocation(newLocation);
-        }
-      );
-      return () => {
-        watchPositionSubscription.current?.remove();
-    };
     };
 
+    const timer = setTimeout(() => {
+      setTracksViewChanges(false);
+    }, 3000); 
     initializeScreen();
+
+    return () => {
+      if (watchPositionSubscription.current) {
+        watchPositionSubscription.current.remove(); // Ensure this is called
+        watchPositionSubscription.current = null; // Clear the reference
+      }
+      clearTimeout(timer);
+    };
   }, []);
 
   const getFeedingLocations = async () => {
     try {
       const response = await listFeedingLocations();
       setMarkers(response.data);
-      setTracksViewChanges(true); // Initialize to true
       console.log("Feeding locations fetched:", response.data);
     } catch (error) {
       console.error("Error fetching feeding locations:", error);
@@ -82,9 +79,20 @@ const FeedingScreen = () => {
       console.log('Permission to access location was denied');
       return;
     }
-
-    let location = await Location.getCurrentPositionAsync({});
-    updateUserLocation(location);
+    if (watchPositionSubscription.current) {
+      console.log("Already watching location");
+      return; 
+    }
+    watchPositionSubscription.current = await Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        timeInterval:10000, // Update if 10seconds pass
+        distanceInterval: 5, // Update if moved 2 meters
+      },
+      (newLocation) => {
+        updateUserLocation(newLocation);
+      }
+    );
   };
 
   const updateUserLocation = (location: Location.LocationObject) => {
@@ -127,7 +135,7 @@ const FeedingScreen = () => {
           longitude: marker.longitude,
         }}
         onPress={() => {handleMarkerPress(marker)}}
-        tracksViewChanges={isSelected || tracksViewChanges || marker.isUser}
+        tracksViewChanges={tracksViewChangesValue || isSelected || marker.isUser}
       >
         {marker.isUser ? (
           <MaterialCommunityIcons 
@@ -151,17 +159,8 @@ const FeedingScreen = () => {
         )}
       </Marker>
       )
-    },[selectedMarker, tracksViewChanges]);
+    },[selectedMarker, tracksViewChangesValue, handleMarkerPress]);
 
-  useEffect(() => {
-    if (markersList.length > 0) {
-      const timer = setTimeout(() => {
-        setTracksViewChanges(false);
-      }, 3000); 
-
-      return () => clearTimeout(timer);
-    }
-  }, [markersList]);
 
   if (isLoading) {
     return (
