@@ -98,6 +98,12 @@ const Donation = () => {
           </View>
         </View>
       </View>
+      <View style={styles.eclipseShape}>
+        <Image 
+          source={require('../assets/images/money_image.png')} 
+          style={styles.silhouetteImage}
+        />
+      </View>
       <Appbar backButton={true} />
     </View>
   );
@@ -110,7 +116,7 @@ const styles = StyleSheet.create({
   },
   greenBackground: {
     flex: 1,
-    paddingBottom: 50,
+    paddingBottom: 30,
     backgroundColor: "#6BBD74",
     borderBottomRightRadius: 50,
     borderBottomLeftRadius: 50,
@@ -173,10 +179,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#731c7a"
   },
-  //informativeTextContainer: {
-  //  padding: 20,
-  //  alignItems: 'center',
-  //},
   headerText: {
     fontSize: 20, 
     fontWeight: 'bold', 
@@ -191,6 +193,23 @@ const styles = StyleSheet.create({
   link: {
     color: 'blue', 
     textDecorationLine: 'underline', 
+  },
+  eclipseShape: {
+    position: "absolute",
+    bottom: 100,
+    left: "50%", 
+    transform: [{ translateX: -25 }], 
+    height: 50,
+    width: 50,
+    backgroundColor: '#6BBD74',
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  silhouetteImage: {
+    width: 46, 
+    height: 42, 
+    resizeMode: 'contain',
   },
 });
 
