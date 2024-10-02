@@ -4,6 +4,16 @@ import React from 'react'
 const Feeding = () => {
   return (
     <View>
+      <View>
+        <Text>Feeding</Text>
+      </View>
+      <View>
+        <Text>Feeding</Text>
+      </View>
+      <View>
+        <Text>Feeding</Text>
+      </View>
+
       <Text>Feeding</Text>
     </View>
   )
