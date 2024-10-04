@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
-import MapView, { Callout, Marker } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { mapstyles } from '@/constants/Styles'
 import Appbar from '@/components/Appbar';
 import { listFeedingLocations } from '@/service/feedingLocationServices';
+import {volunteerRequest, isVolunteered ,VolunteerRequestint, isVolunteeredint, feedingDoneRequestint, feedingDoneRequest} from "@/service/volunteerServices"
 import * as Location from 'expo-location';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -28,6 +29,11 @@ interface MarkerInfo {
   isUser: boolean;
 }
 
+const symbols = [
+  require("../assets/images/GreenFeedingMarker.png"),
+  require("../assets/images/RedFeedingMarker.png"),
+];
+
 const FeedingScreen = () => {
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
   const watchPositionSubscription = useRef<Location.LocationSubscription | null>(null);
@@ -35,6 +41,8 @@ const FeedingScreen = () => {
   const [userMarker, setUserMarker] = useState<MarkerInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [tracksViewChangesValue, setTracksViewChanges] = useState<boolean>(true);
+  const [Volunteered, setVolunteered] = useState<boolean>(false);
+  const [connecting, setConnecting] = useState<boolean>(false);
   const mapRef = useRef<MapView>(null);
 
   useEffect(() => {
@@ -42,9 +50,11 @@ const FeedingScreen = () => {
       try {
         await getFeedingLocations();
         await getUserLocation();
+        await getUserVolunteerStatus();
       } catch (error) {
         console.error("Error initializing screen:", error);
       } finally {
+        console.log("in finally")
         setIsLoading(false);
       }
     };
@@ -56,12 +66,16 @@ const FeedingScreen = () => {
 
     return () => {
       if (watchPositionSubscription.current) {
-        watchPositionSubscription.current.remove(); // Ensure this is called
-        watchPositionSubscription.current = null; // Clear the reference
+        watchPositionSubscription.current.remove(); 
+        watchPositionSubscription.current = null; 
       }
       clearTimeout(timer);
     };
   }, []);
+
+  useEffect(() => {
+    console.log("Volunteered state changed:", Volunteered);
+  }, [Volunteered]); //for debuging
 
   const getFeedingLocations = async () => {
     try {
@@ -94,7 +108,24 @@ const FeedingScreen = () => {
       }
     );
   };
-
+  const getUserVolunteerStatus = async () => {
+    console.log("in getUserVolunteerStatus")
+    const message: isVolunteeredint = {
+      timestamp: new Date().toISOString(),
+      username: "YourUsername",
+    };
+    try {
+      const response = await isVolunteered(message);
+      console.log("Feeding locations fetched:", response.data.location);
+      if(response.data.location.trim()){
+        setVolunteered(true);
+        setSelectedMarker(response.data.location);
+      }
+    } catch (error) {
+      console.error("Error fetching feeding locations:", error);
+    }
+  }
+  
   const updateUserLocation = (location: Location.LocationObject) => {
     console.log("updated location", location)
     setUserMarker({
@@ -107,20 +138,108 @@ const FeedingScreen = () => {
   };
 
   const handleMarkerPress = useCallback((marker: MarkerInfo) => {
-    if (selectedMarker === marker.title) {
+    if(!connecting){
+      if (selectedMarker === marker.title && !Volunteered) {
         setSelectedMarker(null);
+      } else {
+          if (!Volunteered){
+            console.log("in the volunteered check line:120");
+            if(marker.title == "Your Location"){
+              console.log("user marker can't be sellected for volunteering");
+            } else{
+              setSelectedMarker(marker.title);
+            }
+          }
+          mapRef.current?.animateToRegion({
+              latitude: marker.latitude,
+              longitude: marker.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+          }, 1000);
+      } 
+    } else{
+      console.log("Why am I working.")}
+  }, [selectedMarker, Volunteered, connecting]);
+
+  const handleVolunteer = async () => {
+    if (selectedMarker && !Volunteered) {
+      const volunteerData: VolunteerRequestint = {
+            timestamp: new Date().toISOString(),
+            username: "YourUsername",
+            location: selectedMarker,
+            volunteer: true,
+        };
+        try {
+            setConnecting(true);
+            const response = await volunteerRequest(volunteerData);
+            console.log("Volunteer request response:", response);
+            if (response.status == "accepted"){
+              setVolunteered(true);
+            }
+        } catch (error) {
+            console.error("Error sending volunteer request:", error);
+        } finally {
+          setConnecting(false)}
     } else {
-        setSelectedMarker(marker.title);
-        mapRef.current?.animateToRegion({
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-        }, 1000);
-
+        if (!selectedMarker) {
+            console.log("A marker isn't selected"); // for debug
+        }
+        if (Volunteered) {
+            console.log("Already volunteered");}
+        console.log(Volunteered); // for debug
     }
-}, [selectedMarker]);
+  }
+  const handleNotVolunteer = async() => {
+    if (selectedMarker && Volunteered) {
+      const volunteerData: VolunteerRequestint = {
+            timestamp: new Date().toISOString(),
+            username: "YourUsername", 
+            location: selectedMarker, 
+            volunteer: false, 
+        };
+        try {
+            setConnecting(true); 
+            const response = await volunteerRequest(volunteerData);
+            console.log("Not volunteer request response:", response);
+            if (response.status == "accepted"){
+              setVolunteered(false);
+            }
+        } catch (error) {
+            console.error("Error sending not volunteer request:", error);
+        } finally {
+          setConnecting(false); 
+        }
 
+      setVolunteered(false);
+      console.log("sended newvolunteer request. Not volunteered")
+    } else {
+      if(!selectedMarker){
+        console.log("a marker isn't sellected"); //for debug
+      }
+      console.log(Volunteered);//for debug
+    }
+  }
+
+  const handlefeedingDone = async() => {
+    if(Volunteered){
+      const feedingData: feedingDoneRequestint ={
+        timestamp: new Date().toISOString(),
+        username: "YourUsername",
+      }
+      try{
+        setConnecting(true)
+        const response = await feedingDoneRequest(feedingData);
+        if(response.status){
+          setVolunteered(false);
+          setSelectedMarker(null);
+        }
+      } catch (error) {
+        console.error("Error sending not volunteer request:", error);
+      } finally {
+          setConnecting(false); 
+        }
+    }
+  }
 
   const renderMarker = useCallback((marker: MarkerInfo) => {
     const isSelected = marker.title === selectedMarker;
@@ -145,11 +264,7 @@ const FeedingScreen = () => {
           />
         ) : (
           <Image
-            source={
-              isSelected
-                ? require("../assets/images/GreenFeedingMarker.png")
-                : require("../assets/images/RedFeedingMarker.png")
-            }
+            source={isSelected ? symbols[0] : symbols[1]}
             style={{
               width: 40,
               height: 40,
@@ -158,9 +273,8 @@ const FeedingScreen = () => {
           />
         )}
       </Marker>
-      )
-    },[selectedMarker, tracksViewChangesValue, handleMarkerPress]);
-
+    );
+  }, [selectedMarker, tracksViewChangesValue, handleMarkerPress]);
 
   if (isLoading) {
     return (
@@ -188,31 +302,34 @@ const FeedingScreen = () => {
             </MapView>
           </View>
           <View style={mapstyles.volunteerButtonsContainer}>
-            <TouchableOpacity style={[mapstyles.volunteerButtonContainer, {backgroundColor: '#C6152C'}]}>
-              <Text style={{color: 'white', fontSize: 12}}>NOT VOLUNTEER TODAY</Text>
+            <TouchableOpacity 
+              style={[mapstyles.volunteerButtonContainer, { backgroundColor: Volunteered ? '#4D9F56' : '#C6152C' }]} 
+              onPress={handleNotVolunteer}
+            >
+              <Text style={{ color: 'white', fontSize: 12 }}>NOT VOLUNTEER TODAY</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[mapstyles.volunteerButtonContainer, {backgroundColor: '#4D9F56'}]}>
-              <Text style={{color: 'white', fontSize: 12}}>BE VOLUNTEER</Text>
+            <TouchableOpacity 
+              style={[mapstyles.volunteerButtonContainer, { backgroundColor: Volunteered ? '#C6152C' : '#4D9F56' }]} 
+              onPress={handleVolunteer}
+            >
+              <Text style={{ color: 'white', fontSize: 12 }}>BE VOLUNTEER</Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={mapstyles.locationButtonsContainer}>
-            {markersList
-              .filter(marker => !marker.isUser)
-              .map((marker, index) => (
+          {markersList
+            .filter(marker => !marker.isUser)
+            .map((marker, index) => (
               <TouchableOpacity 
-              key={index} 
-              style={[
-                mapstyles.locationButtonContainer,
-                selectedMarker === marker.title && {backgroundColor: '#4D9F56'}
-              ]}
-              onPress={() => handleMarkerPress(marker)}
+                key={index} 
+                style={[mapstyles.locationButtonContainer, selectedMarker === marker.title && { backgroundColor: '#4D9F56' }]}
+                onPress={() => handleMarkerPress(marker)}
               >
                 <Text style={{ color: 'white', fontSize: 12 }}>{marker.title}</Text>
               </TouchableOpacity>
             ))}
           </View>
-          <TouchableOpacity style={mapstyles.feedingDoneButton}>
+          <TouchableOpacity style={mapstyles.feedingDoneButton} onPress={handlefeedingDone}>
             <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>FEEDING DONE</Text>
           </TouchableOpacity>
       </View>
