@@ -14,7 +14,7 @@ const Header = () => {
   });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState(require('../assets/picture.png'));
+  const [profileImage, setProfileImage] = useState(require('../assets/images/picture.png'));
   const [moodDescription, setMoodDescription] = useState('Describe your mood to share with friends.');
   const [isEditing, setIsEditing] = useState(false);
 

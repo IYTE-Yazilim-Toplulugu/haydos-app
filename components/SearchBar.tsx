@@ -14,7 +14,7 @@ const SearchBar = () => {
     <View style={styles.searchWrapper}>
       <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
         <Image 
-          source={require('../assets/BackButton.png')} 
+          source={require('../assets/images/BackButton.png')} 
           style={styles.backIcon} 
         />
       </TouchableOpacity>
