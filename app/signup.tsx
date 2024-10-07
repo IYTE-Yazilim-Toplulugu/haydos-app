@@ -118,20 +118,15 @@ const SignupScrean = () => {
 };
 
   return (
-    <View>
-      <Text>Signup</Text>
-      <Link href="/" style={styles.link}>
-        <ThemedText type="link">Go Back</ThemedText>
-      </Link>
-    </View>
+    <ScrollView 
+      contentContainerStyle={{ flexGrow: 1 }}
+      style={{ flex: 1, backgroundColor: '#EAECE2' }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <FormBody {...formBodyProps}/>
+      <Appbar backButton={true}/>
+    </ScrollView>
   )
 }
 
-const styles = StyleSheet.create({
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-});
-
-export default Signup
+export default SignupScrean
