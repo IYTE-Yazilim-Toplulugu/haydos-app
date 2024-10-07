@@ -18,14 +18,15 @@ const SearchBar = () => {
           style={styles.backIcon} 
         />
       </TouchableOpacity>
-      <View style={styles.searchContainer}>
+      {/* Arama bileşenini burada yorum haline getiriyoruz */}
+      {/*<View style={styles.searchContainer}>
         <Icon name="search" size={20} color="#888" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search Friends!"
           placeholderTextColor="#888"
         />
-      </View>
+      </View>*/}
     </View>
   );
 };

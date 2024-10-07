@@ -20,7 +20,7 @@ const Index = () => {
        <Link href="/adoption" style={styles.link}>
         <ThemedText type="link">Adoption Page</ThemedText>
        </Link>
-       <Link href="/home" style={styles.link}>
+       <Link href="/welcome" style={styles.link}>
         <ThemedText type="link">Home Page</ThemedText>
        </Link>
        <Link href="/missings" style={styles.link}>

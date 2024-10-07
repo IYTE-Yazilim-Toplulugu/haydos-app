@@ -1,21 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import profileservice from '../service/profileservice'; // profileservice'i içe aktar
 
 const InfoCard = () => {
+  const profileData = profileservice(); // Verileri çek
+
   return (
     <View style={styles.infoCardWrapper}>
       <View style={styles.infoCard}>
         <View style={styles.infoColumn}>
           <Text style={styles.infoLabel}>Name Surname</Text>
-          <Text style={styles.infoValue}>Mete ERÇEK</Text>
+          <Text style={styles.infoValue}>{profileData.data.Name}</Text>
         </View>
         <View style={styles.infoColumn}>
           <Text style={styles.infoLabel}>PHONE NUMBER</Text>
-          <Text style={styles.infoValue}>+90 544 224 88 04</Text>
+          <Text style={styles.infoValue}>{profileData.data.PhoneNumber}</Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>MAIL</Text>
-          <Text style={styles.infoValue}>goktugerçek@std.iyte.edu.tr</Text>
+          <Text style={styles.infoValue}>{profileData.data.Mail}</Text>
         </View>
       </View>
       <View style={styles.grayExtension} />

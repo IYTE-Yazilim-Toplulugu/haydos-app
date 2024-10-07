@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ECEEE5',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    marginTop: -20, // Üstteki alanla örtüşmesini sağlar
-    paddingTop: 20, // İçeriği yukarı kaydırır
+    marginTop: -20,
+    paddingTop: 20,
   },
 });
 

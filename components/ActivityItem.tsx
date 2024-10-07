@@ -35,7 +35,7 @@ const ActivityItem: React.FC<ActivityItemProps> = ({ name, action, showAddButton
         <Text style={styles.action}>{action}</Text>
       </View>
       {showAddButton && (
-        <TouchableOpacity onPress={handleAddUser} style={styles.addButton}>
+        <TouchableOpacity onPress={() => {}} style={styles.addButton}>
           <Icon name="user-plus" size={20} color="#4CAF50" style={styles.addIcon} />
         </TouchableOpacity>
       )}

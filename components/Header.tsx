@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, Alert, TextInpu
 import Icon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
 import { useFonts } from 'expo-font';
+import profileservice from '@/service/profileservice';
 
 const MAX_MOOD_DESCRIPTION_LENGTH = 50;
 
@@ -58,6 +59,8 @@ const Header = () => {
     return null; // Fontlar yüklenene kadar bir şey gösterme
   }
 
+  const profileData = profileservice();
+
   return (
     <View style={styles.header}>
       <View style={styles.headerTop}>
@@ -91,41 +94,16 @@ const Header = () => {
           <TouchableOpacity onPress={toggleEditing} style={styles.editButton}>
             <Icon name="edit-2" size={16} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleMenuPress} style={styles.menuButton}>
-            <Icon name="menu" size={24} color="#fff" style={styles.menuIcon} />
-          </TouchableOpacity>
         </View>
       </View>
-      <Modal
-        visible={isMenuOpen}
-        animationType="fade"
-        transparent={true}
-        onRequestClose={() => setIsMenuOpen(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.menuModal}>
-            <TouchableOpacity onPress={() => setIsMenuOpen(false)} style={styles.closeButton}>
-              <Icon name="x" size={20} color="#000" />
-            </TouchableOpacity>
-            <View style={styles.menuContent}>
-              <TouchableOpacity style={styles.menuItem}>
-                <Text style={styles.menuItemText}>1</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.menuItem}>
-                <Text style={styles.menuItemText}>2</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
       <View style={styles.statsContainer}>
         <View style={styles.statItem}>
           <Text style={styles.statLabel}>Animals You Feed</Text>
-          <Text style={styles.statValue}>85</Text>
+          <Text style={styles.statValue}>{profileData.data.Feed}</Text>
         </View>
         <View style={styles.statItem}>
           <Text style={styles.statLabel}>Paw-Score</Text>
-          <Text style={styles.statValue}>125</Text>
+          <Text style={styles.statValue}>{profileData.data.PawScore}</Text>
         </View>
       </View>
     </View>
